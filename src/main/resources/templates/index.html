@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stork Load Balancing Demo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+</head>
+
+<body>
+<div class="columns">
+    <div class="column"></div>
+    <div class="column is-two-thirds">
+        <section class="section hero">
+            <div class="container">
+                <h1 class="title">
+                    Stork Load Balancing Demo
+                </h1>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="content">
+
+                <div class="columns">
+                    <div class="column is-two-thirds">
+                        <p>
+                            This page allows you to invoke a dummy service 10 times and see which service instance has been used
+                            for each call. We will be switching the <em>load-balancing</em> strategy to see how they change the selection.
+                            There are three services:
+                        </p>
+                        <ul>
+                            <li>Blue Service (&nbsp;🔵&nbsp;)</li>
+                            <li>Yellow Service (&nbsp;🟡&nbsp;), slightly slower than the blue service</li>
+                            <li>Green Service (&nbsp;🟢&nbsp;), the fastest, but has 20% of chance to fail (&nbsp;❌&nbsp;)</li>
+                        </ul>
+                        <p>You can either call the service 10 times sequentially or concurrently. When using the latter, requests are emitted without any specific order.</p>
+                        <p>The current load balancing strategy is: <strong>{strategy}</strong></p>
+                    </div>
+                    <div class="column">
+                        <div>
+                            <button id="invoke" class="button is-link is-fullwidth">
+                                Call the service 10 times
+                            </button>
+                        </div>
+                        <div>&nbsp;</div>
+                        <div>
+                            <button id="invoke-concurrently" class="button is-link is-fullwidth">
+                                Call the service 10 times concurrently
+                            </button>
+                        </div>
+                        <div>&nbsp;</div>
+                        <div>
+                            <button id="clear" class="button is-warning is-fullwidth">
+                                Clear the output
+                            </button>
+                        </div>
+                    </div>
+                    <div class="column is-one-fifth">
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="content">
+                <table id="results" class="table">
+                    <thead>
+                    <tr>
+                        <th><abbr title="#">#</abbr></th>
+                        <th>Results</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+    <div class="column"></div>
+</div>
+
+</body>
+
+<script>
+    function append(cell, pos, data) {
+        console.log(cell.getElementsByTagName("td"))
+        cell.getElementsByTagName("td")[pos].innerHTML = data;
+    }
+
+    async function invoke() {
+        let table = document.getElementById("results");
+        let run = 1;
+        if (table.rows[1]) {
+            run = parseInt(table.rows[1].cells[0].innerHTML) + 1;
+        }
+        const row = table.insertRow(1);
+        row.insertCell(0).innerHTML = "" + run;
+        const cell = row.insertCell(1);
+        cell.innerHTML = "<table><tr><td>⏳</td><td>⏳</td><td>⏳</td><td>⏳</td><td>⏳</td><td>⏳</td><td>⏳</td><td>⏳</td><td>⏳</td><td>⏳</td></tr></table>"
+
+
+        let array = [];
+        for (let i = 0; i < 10; i++) {
+            array.push(fetch('/dispatcher?r=' + run)
+                .then(response => response.text())
+                .then(data => append(cell, i, data)));
+        }
+
+        await Promise.all(array);
+    }
+
+    async function invokeConcurrently() {
+        let table = document.getElementById("results");
+        let run = 1;
+        if (table.rows[1]) {
+            run = parseInt(table.rows[1].cells[0].innerHTML) + 1;
+        }
+        const row = table.insertRow(1);
+        row.insertCell(0).innerHTML = "" + run;
+        const cell = row.insertCell(1);
+        cell.innerHTML = "<table><tr><td>⏳</td><td>⏳</td><td>⏳</td><td>⏳</td><td>⏳</td><td>⏳</td><td>⏳</td><td>⏳</td><td>⏳</td><td>⏳</td></tr></table>"
+
+
+        let array = [];
+        for (let i = 0; i < 10; i++) {
+            array.push(fetch('/dispatcher?c=' + i)
+                .then(response => response.text())
+                .then(data => append(cell, i, data)));
+        }
+
+        await Promise.all(array);
+    }
+
+    function clear() {
+        let table = document.getElementById("results");
+
+        for (let i = table.rows.length - 1; i >= 1; i--) {
+            table.deleteRow(i);
+        }
+    }
+
+    document.getElementById("invoke-concurrently").addEventListener("click", invokeConcurrently);
+    document.getElementById("invoke").addEventListener("click", invoke);
+    document.getElementById("clear").addEventListener("click", clear);
+</script>
+</html>
