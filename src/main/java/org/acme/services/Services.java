@@ -52,7 +52,7 @@ public class Services {
                 .requestHandler(req -> {
                     vertx.setTimer(5, x -> {
                         if (random.nextInt(100) > (100 - greenFailureRatio)) {
-                            req.response().endAndForget("❌");
+                            req.response().setStatusCode(500).endAndForget("❌");
                         } else {
                             req.response().endAndForget("🟢");
                         }
