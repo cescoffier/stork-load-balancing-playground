@@ -1,6 +1,7 @@
 package org.acme;
 
 import org.acme.services.Client;
+import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import javax.ws.rs.GET;
@@ -16,9 +17,12 @@ public class Dispatcher {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
+    @Fallback(fallbackMethod = "fallback")
     public String invoke() {
         return client.invoke();
     }
 
-
+    static String fallback() {
+        return "❌";
+    }
 }
