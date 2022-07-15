@@ -13,10 +13,8 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>2.7.1.Final</quarkus.platform.version>
+    <quarkus.platform.version>2.10.2.Final</quarkus.platform.version>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
-
-    <stork.version>1.0.1-SNAPSHOT</stork.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -44,6 +42,10 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-fault-tolerance</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-reactive-qute</artifactId>
     </dependency>
 
@@ -51,33 +53,27 @@
     <dependency>
       <groupId>io.smallrye.stork</groupId>
       <artifactId>stork-service-discovery-static-list</artifactId>
-      <version>${stork.version}</version>
     </dependency>
 
     <dependency>
       <groupId>io.smallrye.stork</groupId>
       <artifactId>stork-load-balancer-random</artifactId>
-      <version>${stork.version}</version>
     </dependency>
 
     <dependency>
       <groupId>io.smallrye.stork</groupId>
       <artifactId>stork-load-balancer-least-requests</artifactId>
-      <version>${stork.version}</version>
     </dependency>
 
     <dependency>
       <groupId>io.smallrye.stork</groupId>
       <artifactId>stork-load-balancer-power-of-two-choices</artifactId>
-      <version>${stork.version}</version>
     </dependency>
 
     <dependency>
       <groupId>io.smallrye.stork</groupId>
       <artifactId>stork-load-balancer-least-response-time</artifactId>
-      <version>${stork.version}</version>
     </dependency>
-
 
     <dependency>
       <groupId>io.quarkus</groupId>
